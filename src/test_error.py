@@ -1,5 +1,6 @@
 ####Pruebas de error para juoyter notebook 
 ### probamos el archivo de error en juoyter notebook
+## chay ia es el tutorial desarrollo de sotfware
 
 import sys
 from src.exception import CustomException
@@ -20,3 +21,5 @@ if __name__ == "__main__":
 
 #Si se lo ejecuta en la terminal si fucniona da el archivo y la linea que tiene ese error'
 #.\venv\python.exe 
+#Este archivo es temporal no forma parte de los archivos del proyecto lo cree para probar nada mas
+
