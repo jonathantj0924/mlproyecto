@@ -42,3 +42,35 @@ def load_object(file_path):
     """
     with open(file_path, "rb") as f:
         return dill.load(f)
+
+
+
+#CReacion de una metrica par evaluar modelos la llamamos desde el otro archivo
+from sklearn.metrics import r2_score
+
+def evaluate_models(X_train, y_train, X_test, y_test, models):
+    """
+    Entrena múltiples modelos y evalúa su rendimiento con R2 Score.
+    """
+    try:
+        report = {}
+
+        for i in range(len(list(models))):
+            model = list(models.values())[i]
+
+            # 1. Entrenar modelo
+            model.fit(X_train, y_train)
+
+            # 2. Predecir en datos de prueba
+            y_test_pred = model.predict(X_test)
+
+            # 3. Calcular métrica R2
+            test_model_score = r2_score(y_test, y_test_pred)
+
+            # 4. Guardar puntaje en el reporte
+            report[list(models.keys())[i]] = test_model_score
+
+        return report
+
+    except Exception as e:
+        raise CustomException(e, sys)

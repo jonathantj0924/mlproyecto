@@ -3,4 +3,6 @@ numpy
 plotnine
 scikit-learn
 dill
+catboost
+xgboost
 -e .

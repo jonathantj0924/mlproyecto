@@ -10,6 +10,10 @@ from dataclasses import dataclass
 from src.components.data_transformation  import DataTransformation
 from src.components.data_transformation import DataTransformationConfig # e
 
+#importamos para relair pruebas
+from src.components.model_trainer import ModelTrainerConfig
+from src.components.model_trainer import ModelTrainer
+
 
 @dataclass
 class DataIngestionConfig:
@@ -90,21 +94,20 @@ from src.components.data_transformation import DataTransformation
 
 if __name__ == "__main__":
 
-    # PASO 1: Ejecutar la ingesta de datos
-
-    # Retorna las rutas donde quedaron guardados train.csv y test.csv
+    # 1. El primer corredor corre y entrega 'train_data' y 'test_data'
     obj = DataIngestion()
-    train_data, test_data = obj.initiate_data_ingestion() #metodo dentro de la clase
-
-    # PASO 2: Pasar esas rutas a la transformación de datos
-    # DataTransformation lee los CSV, aplica pipelines y guarda preprocessor.pkl
+    train_data, test_data = obj.initiate_data_ingestion()
+    #    │           │
+    #    └─────┬─────┘
+    #          │ (SE LO PASAMOS AL SEGUNDO CORREDOR)
+    #          ▼
+    # 2. El segundo corredor recibe las rutas y devuelve las matrices numéricas 'train_arr' y 'test_arr'
     data_transformation = DataTransformation()
-    data_transformation.initiate_data_transformation(train_data, test_data)
-
-
-
-
-
-
-
-
+    train_arr, test_arr, _ = data_transformation.initiate_data_transformation(train_data, test_data)
+    #     │         │
+    #     └────┬────┘
+    #          │ (SE LO PASAMOS AL TERCER CORREDOR)
+    #          ▼
+    # 3. El tercer corredor recibe las matrices numéricas y calcula el ganador
+    model_trainer = ModelTrainer()
+    print(model_trainer.initiate_model_trainer(train_arr, test_arr))
