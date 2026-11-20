@@ -9,6 +9,9 @@ u otros objetos que no son soportados por `pickle` estándar.
 
 import os
 import dill
+import sys
+from src.exception import CustomException
+from sklearn.model_selection import GridSearchCV
 
 
 def save_object(obj, file_path):
@@ -44,11 +47,10 @@ def load_object(file_path):
         return dill.load(f)
 
 
-
 #CReacion de una metrica par evaluar modelos la llamamos desde el otro archivo
 from sklearn.metrics import r2_score
 
-def evaluate_models(X_train, y_train, X_test, y_test, models):
+def evaluate_models(X_train, y_train, X_test, y_test, models, params): # colocamos el parametro en el modelo de evaluacion 
     """
     Entrena múltiples modelos y evalúa su rendimiento con R2 Score.
     """
@@ -57,7 +59,15 @@ def evaluate_models(X_train, y_train, X_test, y_test, models):
 
         for i in range(len(list(models))):
             model = list(models.values())[i]
+            para = params[list(models.keys())[i]]
 
+            # 1. Buscar los mejores hiperparámetros con 3 divisiones (cv=3) #cv es validacion cruzada
+            gs = GridSearchCV(model, para, cv=3) 
+            gs.fit(X_train, y_train)
+            # 2. Reconfigurar el modelo con los parámetros ganadores y re-entrenarlo
+            model.set_params(**gs.best_params_)
+
+            #codido anterior 
             # 1. Entrenar modelo
             model.fit(X_train, y_train)
 
@@ -74,3 +84,4 @@ def evaluate_models(X_train, y_train, X_test, y_test, models):
 
     except Exception as e:
         raise CustomException(e, sys)
+

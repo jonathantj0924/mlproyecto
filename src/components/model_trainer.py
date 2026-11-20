@@ -55,14 +55,65 @@ class ModelTrainer:
                 "AdaBoost Regressor": AdaBoostRegressor(),
             }
 
+            #parametros para obtimizar los modelos son las perillas de cada modelo movemos para ajustarlo 
+            # ver el notebook pruebas ahi etsa todo 
+            #la explicaicon de lo que significa cada parametro
+            params = {
+                "Decision Tree": {
+                    'criterion': ['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
+                    # 'splitter': ['best', 'random'],
+                    # 'max_features': ['sqrt', 'log2'],
+                },
+                "Random Forest": {
+                    # 'criterion': ['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
+                    # 'max_features': ['sqrt', 'log2', None],
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
+                },
+                "Gradient Boosting": {
+                    # 'loss': ['squared_error', 'huber', 'absolute_error', 'quantile'],
+                    'learning_rate': [.1, .01, .05, .001],
+                    'subsample': [0.6, 0.7, 0.75, 0.8, 0.85, 0.9],
+                    # 'criterion': ['squared_error', 'friedman_mse'],
+                    # 'max_features': ['auto', 'sqrt', 'log2'],
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
+                },
+                "Linear Regression": {},
+                "K-Neighbors Regressor": {
+                    'n_neighbors': [5, 7, 9, 11]
+                    # 'weights': ['uniform', 'distance'],
+                    # 'algorithm': ['ball_tree', 'kd_tree', 'brute']
+                },
+                "XGBRegressor": {
+                    'learning_rate': [.1, .01, .05, .001],
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
+                },
+                "CatBoosting Regressor": {
+                    'depth': [6, 8, 10],
+                    'learning_rate': [0.01, 0.05, 0.1],
+                    'iterations': [30, 50, 100]
+                },
+                "AdaBoost Regressor": {
+                    'learning_rate': [.1, .01, 0.5, .001],
+                    # 'loss': ['linear', 'square', 'exponential'],
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
+                }
+            }
+
+
+
+
+
+
+
             logging.info("[model_trainer.py] 2.- Evaluando todos los modelos...")
             # evaluate_models entrena cada uno y nos retorna un diccionario {nombre: r2_score}
-            model_report:  dict = evaluate_models(
-                X_train=X_train,
+            model_report:  dict = evaluate_models( # esta funcion esta contenida en utils 
+                X_train=X_train, 
                 y_train=y_train,
                 X_test=X_test,
                 y_test=y_test,
                 models=models,
+                params = params
             )
 
             # Obtener el puntaje más alto
@@ -98,3 +149,6 @@ class ModelTrainer:
 
         except Exception as e:
             raise CustomException(e, sys)
+
+
+    

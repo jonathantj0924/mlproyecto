@@ -51,6 +51,12 @@ def obtener_requisitos(ruta: str)-> List[str]:
 
 
 
+
+
+#minimo para que funcione como paquete de datos
+#Estas lienas debes correr
+
+from setuptools import find_packages, setup
 setup(
     name='mlproject',                         # Nombre de tu proyecto / paquete
     version='0.0.1',                          # Versión inicial
